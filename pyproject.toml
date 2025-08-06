@@ -11,6 +11,7 @@ dependencies = [
     "psycopg>=3.2.9",
     "python-dotenv>=1.1.1",
     "ruff>=0.12.7",
+    "whitenoise>=6.9.0",
 ]
 
 [tool.setuptools]
