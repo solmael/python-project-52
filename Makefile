@@ -1,11 +1,10 @@
 install:
-	uv sync
-
+	un sync
 migrate:
-    python manage.py migrate
+	python manage.py migrate
 
 collectstatic:
-    python manage.py collectstatic --noinput
+	python manage.py collectstatic --noinput
 
 build:
 	./build.sh
@@ -23,4 +22,4 @@ env:
 	source .venv/bin/activate
 
 dev:
-	uv run manage.py runserver
+	uv run manageбзн runserver
