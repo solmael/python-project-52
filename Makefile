@@ -1,13 +1,11 @@
 install:
 	uv sync
 
-dev:
-	psql -d mydb_dev -f database.sql
-	uv run flask --debug --app page_analyzer:app run
+migrate:
+    python manage.py migrate
 
-PORT ?= 8000
-start:
-	uv run gunicorn -w 5 -b 0.0.0.0:$(PORT) page_analyzer:app
+collectstatic:
+    python manage.py collectstatic --noinput
 
 build:
 	./build.sh
@@ -23,3 +21,6 @@ fix:
 
 env:
 	source .venv/bin/activate
+
+dev:
+	uv run manage.py runserver
