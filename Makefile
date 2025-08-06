@@ -1,5 +1,5 @@
 install:
-	un sync
+	uv sync
 migrate:
 	python manage.py migrate
 
