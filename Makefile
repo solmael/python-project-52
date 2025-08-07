@@ -22,4 +22,4 @@ env:
 	source .venv/bin/activate
 
 dev:
-	uv run manageбзн runserver
+	uv run manage.py runserver

@@ -17,3 +17,4 @@ draft
 *.pyc
 db.sqlite3
 media/
+*.mo
