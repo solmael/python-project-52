@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 def index(request):
-    return render(request, 'index.html')
+    return render(request, 'task_manager/index.html')
 
 def users(request):
     return render(request, 'users.html')
