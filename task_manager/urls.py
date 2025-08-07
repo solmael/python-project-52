@@ -17,11 +17,14 @@ Including another URLconf
 from django.contrib import admin
 from django.http import HttpResponse
 from django.urls import path
+from . import views
 
 def home(request):
     return HttpResponse("Hello, World!")
 
 urlpatterns = [
-    path('', home, name='home'),
-    path('admin/', admin.site.urls),
+    path('', views.index, name='home'),
+    path('users/', views.users, name='users'),
+    path('login/', views.login_view, name='login'),
+    path('register/', views.register_view, name='register'),
 ]
