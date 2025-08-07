@@ -23,3 +23,6 @@ env:
 
 dev:
 	uv run manage.py runserver
+
+compilemessages:
+	uv run django-admin compilemessages
