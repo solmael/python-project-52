@@ -69,7 +69,7 @@ TEMPLATES = [
             ],
             'libraries': {
                 'i18n': 'django.templatetags.i18n',
-                'bootstrap5': 'django_bootstrap5.templatetags.bootstrap5',
+                'bootstrap5': 'django_bootstrap5.templatetags.django_bootstrap5',
             }
         },
     },
