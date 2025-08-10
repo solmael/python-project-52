@@ -18,13 +18,23 @@ from django.contrib import admin
 from django.http import HttpResponse
 from django.urls import path
 from . import views
+from .views import (
+    UsersListView,
+    UserCreateView,
+    UserUpdateView,
+    UserDeleteView
+)
+from django.contrib.auth.views import LoginView, LogoutView
 
 def home(request):
     return HttpResponse("Hello, World!")
 
 urlpatterns = [
     path('', views.index, name='home'),
-    path('users/', views.users, name='users'),
-    path('login/', views.login_view, name='login'),
-    path('register/', views.register_view, name='register'),
+    path('users/', UsersListView.as_view(), name='users'),
+    path('users/register/', UserCreateView.as_view(), name='user_create'),
+    path('users/<int:pk>/update/', UserUpdateView.as_view(), name='user_update'),
+    path('users/<int:pk>/delete/', UserDeleteView.as_view(), name='user_delete'),
+    path('login/', LoginView.as_view(template_name='task_manager/login.html'), name='login'),
+    path('logout/', LogoutView.as_view(next_page='home'), name='logout'),
 ]
