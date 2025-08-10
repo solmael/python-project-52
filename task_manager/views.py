@@ -3,7 +3,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import CustomUser
-from .forms import CustomUserCreationForm, CustomUserChangeForm
+from .forms.user_forms import CustomUserCreationForm, CustomUserChangeForm
 
 def index(request):
     return render(request, 'task_manager/index.html')
