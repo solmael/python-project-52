@@ -26,7 +26,7 @@ def home(request):
 urlpatterns = [
     path('', views.index, name='home'),
     path('users/', views.UsersListView.as_view(), name='users'),
-    path('users/register/', views.UserCreateView.as_view(), name='user_create'),
+    path('users/create/', views.UserCreateView.as_view(), name='user_create'),
     path('users/<int:pk>/update/', views.UserUpdateView.as_view(), name='user_update'),
     path('users/<int:pk>/delete/', views.UserDeleteView.as_view(), name='user_delete'),
     path('login/', LoginView.as_view(template_name='task_manager/login.html'), name='login'),
