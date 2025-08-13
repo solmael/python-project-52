@@ -1,7 +1,8 @@
 install:
 	uv sync
 migrate:
-	uv run manage.py migrate --fake-initial
+	uv run manage.py migrate task_manager --fake
+	uv run manage.py migrate
 
 collectstatic:
 	python manage.py collectstatic --noinput
