@@ -1,28 +1,12 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import User
 
-class CustomUser(AbstractUser):
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     full_name = models.CharField(max_length=255)
     
-    class Meta:
-        swappable = 'AUTH_USER_MODEL'
-    
-    groups = models.ManyToManyField(
-        'auth.Group',
-        verbose_name='groups',
-        blank=True,
-        help_text='The groups this user belongs to.',
-        related_name="customuser_set",
-        related_query_name="user",
-    )
-    user_permissions = models.ManyToManyField(
-        'auth.Permission',
-        verbose_name='user permissions',
-        blank=True,
-        help_text='Specific permissions for this user.',
-        related_name="customuser_set",
-        related_query_name="user",
-    )
+    def __str__(self):
+        return self.full_name
 
 class Task(models.Model):
     title = models.CharField(max_length=255)
