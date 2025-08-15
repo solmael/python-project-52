@@ -18,3 +18,5 @@ draft
 db.sqlite3
 media/
 *.mo
+db.sqlite3
+staticfiles/
