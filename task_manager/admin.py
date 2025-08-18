@@ -1,13 +1,16 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
-from .models import Profile, Task, Status, Label
+
+from .models import Label, Profile, Status, Task
+
 
 class ProfileInline(admin.StackedInline):
     model = Profile
     can_delete = False
     verbose_name_plural = 'Profile'
     fk_name = 'user'
+
 
 class CustomUserAdmin(UserAdmin):
     inlines = (ProfileInline,)
@@ -22,6 +25,7 @@ class CustomUserAdmin(UserAdmin):
         if not obj:
             return list()
         return super(CustomUserAdmin, self).get_inline_instances(request, obj)
+
 
 # Отмените регистрацию стандартного User и зарегистрируйте с профилем
 admin.site.unregister(User)
