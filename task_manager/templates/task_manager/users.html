@@ -17,7 +17,7 @@
         <tr>
             <td>{{ user.id }}</td>
             <td>{{ user.username }}</td>
-            <td>{{ user.full_name }}</td>
+            <td>{{ user.profile.full_name }}</td>
             <td>{{ user.date_joined }}</td>
             <td>
                 <a href="{% url 'user_update' pk=user.id %}">Изменить</a>
