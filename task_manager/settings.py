@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 import os
 from pathlib import Path
+
 import dotenv
 
 dotenv.load_dotenv()
@@ -82,6 +83,7 @@ WSGI_APPLICATION = 'task_manager.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 import dj_database_url
+
 if os.getenv('DATABASE_URL'):
     DATABASES = {
         'default': dj_database_url.config(default=os.getenv('DATABASE_URL'), conn_max_age=600)
@@ -118,14 +120,19 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+# LANGUAGE_CODE = 'en-us'
+# LANGUAGES = [
+#    ('ru', 'Russian'),
+#    ('en', 'English'),
+# ]
+LANGUAGE_CODE = 'ru'
 LANGUAGES = [
     ('ru', 'Russian'),
-    ('en', 'English'),
 ]
 LOCALE_PATHS = [
     os.path.join(BASE_DIR, 'task_manager', 'locale'),
 ]
+
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
