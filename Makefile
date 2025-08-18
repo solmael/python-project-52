@@ -1,7 +1,7 @@
 install:
 	uv sync
 migrate:
-	python manage.py makemigrations
+	python manage.py migrate task_manager --fake
 	python manage.py migrate
 
 collectstatic:
