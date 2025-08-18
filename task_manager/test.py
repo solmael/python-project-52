@@ -1,15 +1,21 @@
-from django.test import TestCase, Client
+from django.test import Client, TestCase
 from django.urls import reverse
-from .models import CustomUser
+from django.contrib.auth import get_user_model
+from .models import Profile
+
+
+User = get_user_model()
 
 class UserCRUDTest(TestCase):
     def setUp(self):
         self.client = Client()
-        self.user = CustomUser.objects.create_user(
+
+        self.user = User.objects.create_user(
             username='testuser',
-            password='testpass',
-            full_name='Test User'
+            password='testpass'
         )
+
+        self.profile = Profile.objects.create(user=self.user, full_name='Test User')
 
     def test_user_list_view(self):
         response = self.client.get(reverse('users'))
@@ -18,9 +24,10 @@ class UserCRUDTest(TestCase):
     def test_user_create_view(self):
         data = {
             'username': 'newuser',
-            'full_name': 'New User',
-            'password1': 'newpass',
-            'password2': 'newpass'
+            'first_name': 'New',
+            'last_name': 'User',
+            'password1': 'Newpass123+',
+            'password2': 'Newpass123+'
         }
         response = self.client.post(reverse('user_create'), data)
         self.assertRedirects(response, reverse('login'))
@@ -28,13 +35,22 @@ class UserCRUDTest(TestCase):
     def test_user_update_view(self):
         self.client.login(username='testuser', password='testpass')
         data = {
-            'username': 'updateduser',
-            'full_name': 'Updated User'
+            'username': 'testuser',
+            'first_name': 'Updated',
+            'last_name': 'User'
         }
         response = self.client.post(reverse('user_update', args=[self.user.id]), data)
         self.assertRedirects(response, reverse('users'))
+        
+        # refresh_data
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.first_name, 'Updated')
 
     def test_user_delete_view(self):
         self.client.login(username='testuser', password='testpass')
         response = self.client.post(reverse('user_delete', args=[self.user.id]))
         self.assertRedirects(response, reverse('users'))
+        
+        # delete_user
+        with self.assertRaises(User.DoesNotExist):
+            User.objects.get(id=self.user.id)

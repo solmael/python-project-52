@@ -27,3 +27,6 @@ dev:
 
 compilemessages:
 	uv run django-admin compilemessages
+
+test:
+	python manage.py test task_manager --verbosity=2
