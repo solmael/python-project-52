@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 
-from .models import Label, Profile, Status, Task
+from task_manager.models import Profile
 
 
 class ProfileInline(admin.StackedInline):
@@ -27,9 +27,8 @@ class CustomUserAdmin(UserAdmin):
         return super(CustomUserAdmin, self).get_inline_instances(request, obj)
 
 
-# Отмените регистрацию стандартного User и зарегистрируйте с профилем
 admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)
-admin.site.register(Task)
-admin.site.register(Status)
-admin.site.register(Label)
+# admin.site.register(Task)
+# admin.site.register(Status)
+# admin.site.register(Label)
