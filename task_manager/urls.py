@@ -14,23 +14,38 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib.auth.views import LoginView, LogoutView
-from django.http import HttpResponse
+from django.contrib.auth.views import LogoutView
 from django.urls import path
 
-from . import views
-
-
-def home(request):
-    return HttpResponse("Hello, World!")
-
+from .views import (
+    CustomLoginView,
+    UserCreateView,
+    UserDeleteView,
+    UsersListView,
+    UserUpdateView,
+    index,
+)
 
 urlpatterns = [
-    path('', views.index, name='home'),
-    path('users/', views.UsersListView.as_view(), name='users'),
-    path('users/create/', views.UserCreateView.as_view(), name='user_create'),
-    path('users/<int:pk>/update/', views.UserUpdateView.as_view(), name='user_update'),
-    path('users/<int:pk>/delete/', views.UserDeleteView.as_view(), name='user_delete'),
-    path('login/', LoginView.as_view(template_name='task_manager/login.html'), name='login'),
-    path('logout/', LogoutView.as_view(next_page='home'), name='logout'),
+    #  home
+    path('', index, name='home'),
+    
+    # users
+    path('users/', UsersListView.as_view(), name='users'),
+    path('users/create/', UserCreateView.as_view(), name='user_create'),
+    path('users/<int:pk>/update/', UserUpdateView.as_view(), name='user_update'),
+    path('users/<int:pk>/delete/', UserDeleteView.as_view(), name='user_delete'),
+    
+    # auth
+    path('login/', CustomLoginView.as_view(
+        template_name='task_manager/users/login.html',
+        redirect_authenticated_user=False,
+        redirect_field_name='next',
+        success_url='/'
+    ), name='login'),
+    
+    path('logout/', LogoutView.as_view(
+        next_page='/',
+        redirect_field_name='next'
+    ), name='logout'),
 ]
