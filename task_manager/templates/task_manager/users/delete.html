@@ -8,7 +8,7 @@
     <h1>Удаление пользователя</h1>
     
     <div class="alert alert-warning">
-        Вы уверены, что хотите удалить {{ user.get_full_name }}?
+        Вы уверены, что хотите удалить {{ user.username }}?
     </div>
     
     <form method="post">
@@ -16,3 +16,4 @@
         <button type="submit" class="btn btn-danger">Да, удалить</button>
     </form>
 </div>
+{% endblock %}
