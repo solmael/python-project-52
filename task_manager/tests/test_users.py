@@ -3,7 +3,6 @@ from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
 
-from task_manager.models.user import Profile
 
 User = get_user_model()
 
@@ -46,6 +45,15 @@ class UserCRUDTest(TestCase):
         
         self.user.refresh_from_db()
         self.assertEqual(self.user.first_name, 'Updated')
+
+    def test_user_delete_view(self):
+        self.client.login(username=self.username, password=self.password)
+        
+        response = self.client.post(reverse('user_delete', args=[self.user.id]))
+        self.assertRedirects(response, reverse('users'))
+        
+        with self.assertRaises(User.DoesNotExist):
+            User.objects.get(id=self.user.id)
 
     def test_login_success(self):
         response = self.client.post(reverse('login'), {
