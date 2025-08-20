@@ -1,0 +1,63 @@
+{% extends "task_manager/base.html" %}
+{% load bootstrap5 %}
+
+{% block title %}Редактирование профиля{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Редактирование профиля</h1>
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            {% for field in form %}
+                {% for error in field.errors %}
+                    {{ error }}<br>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <form method="post" novalidate>
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label for="{{ form.first_name.id_for_label }}" class="form-label">Имя</label>
+            {% bootstrap_field form.first_name show_label=False %}
+            {{ form.first_name.errors }}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.last_name.id_for_label }}" class="form-label">Фамилия</label>
+            {% bootstrap_field form.last_name show_label=False %}
+            {{ form.last_name.errors }}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.username.id_for_label }}" class="form-label">Имя пользователя</label>
+            {% bootstrap_field form.username show_label=False %}
+            {{ form.username.errors }}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.password1.id_for_label }}" class="form-label">Новый пароль</label>
+            {% bootstrap_field form.password1 show_label=False %}
+            {% for error in form.password1.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.password2.id_for_label }}" class="form-label">Подтверждение нового пароля</label>
+            {% bootstrap_field form.password2 show_label=False %}
+            {% for error in form.password2.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+        
+        <div class="mb-3 form-text text-muted">
+            Оставьте поля пароля пустыми, если не хотите менять текущий пароль.
+        </div>
+
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    </form>
+</div>
+{% endblock %}

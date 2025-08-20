@@ -20,7 +20,7 @@
             <td>{{ user.profile.full_name }}</td>
             <td>{{ user.date_joined }}</td>
             <td>
-                <a href="{% url 'user_update' pk=user.id %}">Изменить</a>
+                <a href="{% url 'user_update' user.id %}" class="btn btn-primary">Изменить</a>
                 <a href="{% url 'user_delete' pk=user.id %}">Удалить</a>
             </td>
         </tr>
