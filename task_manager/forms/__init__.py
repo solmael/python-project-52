@@ -1,5 +1,5 @@
 from .user_forms import CustomUserChangeForm, CustomUserCreationForm
-from .status_form import StatusForm
+from .status_forms import StatusForm
 
 __all__ = [
     'CustomUserCreationForm',
