@@ -19,6 +19,7 @@ from django.urls import path
 
 from .views import (
     index,
+    logout_view,
     UsersListView,
     UserCreateView,
     UserUpdateView,
@@ -54,6 +55,7 @@ urlpatterns = [
         success_url='/'
     ), name='login'),
     
+    path('logout/', logout_view, name='logout'),
     path('logout/', LogoutView.as_view(
         next_page='/',
         redirect_field_name='next'
