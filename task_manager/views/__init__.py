@@ -6,11 +6,29 @@ from .user_views import (
     UserUpdateView,
 )
 
+
+from .status_views import (
+    StatusListView,
+    StatusCreateView,
+    StatusUpdateView,
+    StatusDeleteView
+)
+
+
 __all__ = [
-    'index',
-    'CustomLoginView',
+    # users
     'UsersListView',
     'UserCreateView',
     'UserUpdateView',
-    'UserDeleteView'
+    'UserDeleteView',
+    
+    # auth
+    'index',
+    'CustomLoginView',
+    
+    # statuses
+    'StatusListView',
+    'StatusCreateView',
+    'StatusUpdateView',
+    'StatusDeleteView'
 ]
