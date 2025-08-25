@@ -1,6 +1,8 @@
 from django.contrib.auth.views import LoginView
-from django.shortcuts import render
+from django.contrib.auth import logout
+from django.shortcuts import redirect, render
 from django.contrib import messages
+from django.urls import reverse_lazy
 
 
 def index(request):
@@ -17,3 +19,9 @@ class CustomLoginView(LoginView):
         else:
             self.request.session.set_expiry(0)
         return super().form_valid(form)
+    
+
+def logout_view(request):
+    messages.info(request, "Вы разлогинены")
+    logout(request)
+    return redirect(reverse_lazy('home'))

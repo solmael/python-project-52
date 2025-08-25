@@ -1,4 +1,4 @@
-from .auth_views import CustomLoginView, index
+from .auth_views import CustomLoginView, index, logout_view
 from .user_views import (
     UserCreateView,
     UserDeleteView,
@@ -25,6 +25,7 @@ __all__ = [
     # auth
     'index',
     'CustomLoginView',
+    'logout_view',
     
     # statuses
     'StatusListView',
