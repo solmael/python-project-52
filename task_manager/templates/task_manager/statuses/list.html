@@ -1,0 +1,70 @@
+{% extends "task_manager/base.html" %}
+{% load bootstrap5 %}
+
+{% block title %}Статусы{% endblock %}
+
+{% block content %}
+<style>
+    .status-table {
+        table-layout: fixed;
+        width: 100%;
+    }
+    
+    .status-table th, .status-table td {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        word-break: break-word;
+    }
+    
+    .status-table th:nth-child(2),
+    .status-table td:nth-child(2) {
+        max-width: 300px;
+        width: 300px;
+    }
+    
+</style>
+
+<div class="container mt-5">
+    <h1>Статусы</h1>
+    
+    {% if messages %}
+    <div class="messages mb-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <a href="{% url 'status_create' %}" class="btn btn-primary mb-3">Создать статус</a>
+
+    <table class="table status-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Имя</th>
+                <th>Дата создания</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for status in statuses %}
+            <tr>
+                <td>{{ status.id }}</td>
+                <td>{{ status.name }}</td>
+                <td>{{ status.created_at|date:"d.m.Y H:i" }}</td>
+                <td>
+                    <a href="{% url 'status_update' status.id %}" class="btn btn-sm btn-primary">Изменить</a>
+                    <a href="{% url 'status_delete' status.id %}" class="btn btn-sm btn-danger">Удалить</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">Статусов нет</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
