@@ -18,12 +18,16 @@ from django.contrib.auth.views import LogoutView
 from django.urls import path
 
 from .views import (
-    CustomLoginView,
-    UserCreateView,
-    UserDeleteView,
-    UsersListView,
-    UserUpdateView,
     index,
+    UsersListView,
+    UserCreateView,
+    UserUpdateView,
+    UserDeleteView,
+    StatusListView,
+    StatusCreateView,
+    StatusUpdateView,
+    StatusDeleteView,
+    CustomLoginView
 )
 
 urlpatterns = [
@@ -35,6 +39,12 @@ urlpatterns = [
     path('users/create/', UserCreateView.as_view(), name='user_create'),
     path('users/<int:pk>/update/', UserUpdateView.as_view(), name='user_update'),
     path('users/<int:pk>/delete/', UserDeleteView.as_view(), name='user_delete'),
+
+    # statuses
+    path('statuses/', StatusListView.as_view(), name='statuses'),
+    path('statuses/create/', StatusCreateView.as_view(), name='status_create'),
+    path('statuses/<int:pk>/update/', StatusUpdateView.as_view(), name='status_update'),
+    path('statuses/<int:pk>/delete/', StatusDeleteView.as_view(), name='status_delete'),
     
     # auth
     path('login/', CustomLoginView.as_view(
