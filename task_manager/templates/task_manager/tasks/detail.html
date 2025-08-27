@@ -1,0 +1,49 @@
+{% extends "task_manager/base.html" %}
+{% load bootstrap5 %}
+
+{% block title %}{{ task.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>{{ task.name }}</h1>
+    
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Описание</h5>
+            <p class="card-text">{{ task.description|default:"Описание отсутствует" }}</p>
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Детали задачи</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Статус:</strong> {{ task.status.name }}</p>
+                    <p><strong>Исполнитель:</strong> {{ task.executor.username|default:"Не назначен" }}</p>
+                    <p><strong>Автор:</strong> {{ task.author.username }}</p>
+                    <p><strong>Дата создания:</strong> {{ task.created_at|date:"d.m.Y H:i" }}</p>
+                    
+                    {% if task.labels.exists %}
+                    <p><strong>Метки:</strong> 
+                        {% for label in task.labels.all %}
+                        <span class="badge bg-secondary">{{ label.name }}</span>
+                        {% endfor %}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="d-flex justify-content-between">
+        <a href="{% url 'tasks' %}" class="btn btn-secondary">Назад к списку задач</a>
+        <div>
+            <a href="{% url 'task_update' task.id %}" class="btn btn-primary me-2">Изменить</a>
+            <a href="{% url 'task_delete' task.id %}" class="btn btn-danger">Удалить</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

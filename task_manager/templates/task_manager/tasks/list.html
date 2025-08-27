@@ -1,0 +1,157 @@
+{% extends "task_manager/base.html" %}
+{% load bootstrap5 %}
+
+{% block title %}Задачи{% endblock %}
+
+{% block content %}
+<style>
+    .tasks-table {
+        table-layout: fixed;
+        width: 100%;
+    }
+    
+    .tasks-table th, .tasks-table td {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        word-break: break-word;
+    }
+    
+    .tasks-table th:nth-child(2),
+    .tasks-table td:nth-child(2) {
+        max-width: 200px;
+        width: 200px;
+    }
+    
+    .tasks-table th:nth-child(3),
+    .tasks-table td:nth-child(3) {
+        max-width: 150px;
+        width: 150px;
+    }
+    
+    .tasks-table th:nth-child(4),
+    .tasks-table td:nth-child(4) {
+        max-width: 150px;
+        width: 150px;
+    }
+    
+    @media (max-width: 768px) {
+        .tasks-table th:nth-child(2),
+        .tasks-table td:nth-child(2) {
+            max-width: 150px;
+            width: 150px;
+        }
+        
+        .tasks-table th:nth-child(3),
+        .tasks-table td:nth-child(3) {
+            max-width: 100px;
+            width: 100px;
+        }
+        
+        .tasks-table th:nth-child(4),
+        .tasks-table td:nth-child(4) {
+            max-width: 100px;
+            width: 100px;
+        }
+    }
+</style>
+
+<div class="container mt-5">
+    <h1>Задачи</h1>
+    
+    {% if messages %}
+    <div class="messages mb-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <div class="row mb-3">
+        <div class="col-md-9">
+            <form method="get" class="row g-3">
+                <div class="col-md-3">
+                    <select name="status" class="form-select">
+                        <option value="">Все статусы</option>
+                        {% for status in statuses %}
+                        <option value="{{ status.id }}" {% if request.GET.status|add:"0" == status.id|add:"0" %}selected{% endif %}>
+                            {{ status.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="executor" class="form-select">
+                        <option value="">Все исполнители</option>
+                        {% for user in users %}
+                        <option value="{{ user.id }}" {% if request.GET.executor|add:"0" == user.id|add:"0" %}selected{% endif %}>
+                            {{ user.username }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="label" class="form-select">
+                        <option value="">Все метки</option>
+                        {% for label in labels %}
+                        <option value="{{ label.id }}" {% if request.GET.label|add:"0" == label.id|add:"0" %}selected{% endif %}>
+                            {{ label.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex align-items-center">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="self_author" name="self_author" {% if request.GET.self_author %}checked{% endif %}>
+                        <label class="form-check-label" for="self_author">
+                            Только мои задачи
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary">Применить</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-3 text-end">
+            <a href="{% url 'task_create' %}" class="btn btn-primary">Создать задачу</a>
+        </div>
+    </div>
+
+    <table class="table tasks-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Имя</th>
+                <th>Статус</th>
+                <th>Исполнитель</th>
+                <th>Автор</th>
+                <th>Дата создания</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+            <tr>
+                <td>{{ task.id }}</td>
+                <td>{{ task.name }}</td>
+                <td>{{ task.status.name }}</td>
+                <td>{{ task.executor.username|default:"" }}</td>
+                <td>{{ task.author.username }}</td>
+                <td>{{ task.created_at|date:"d.m.Y H:i" }}</td>
+                <td>
+                    <a href="{% url 'task_detail' task.id %}" class="btn btn-sm btn-primary">Просмотр</a>
+                    <a href="{% url 'task_update' task.id %}" class="btn btn-sm btn-primary">Изменить</a>
+                    <a href="{% url 'task_delete' task.id %}" class="btn btn-sm btn-danger mt-1">Удалить</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7">Задач нет</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
