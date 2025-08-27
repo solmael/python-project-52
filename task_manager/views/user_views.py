@@ -80,3 +80,13 @@ class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         
         if self.request.user == self.get_object():
             return reverse_lazy('users')
+        
+    def get_queryset(self):
+        return super().get_queryset().filter(id=self.request.user.id)
+    
+    def post(self, request, *args, **kwargs):
+        user = self.get_object()
+        if user.author_tasks.exists() or user.executor_tasks.exists():
+            messages.error(request, 'Невозможно удалить пользователя, потому что он связан с задачами.')
+            return redirect('users')
+        return super().post(request, *args, **kwargs)

@@ -14,6 +14,13 @@ from .status_views import (
     StatusDeleteView
 )
 
+from .task_views import (
+    TaskListView,
+    TaskCreateView,
+    TaskUpdateView,
+    TaskDeleteView,
+    TaskDetailView
+)
 
 __all__ = [
     # users
@@ -31,5 +38,12 @@ __all__ = [
     'StatusListView',
     'StatusCreateView',
     'StatusUpdateView',
-    'StatusDeleteView'
+    'StatusDeleteView',
+
+    # tasks
+    'TaskListView',
+    'TaskCreateView',
+    'TaskUpdateView',
+    'TaskDeleteView',
+    'TaskDetailView'
 ]
