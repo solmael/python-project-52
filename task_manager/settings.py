@@ -10,9 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/  
 """
 import os
+import dj_database_url
 from pathlib import Path
+
 import dotenv
-from django.contrib.messages import constants as messages  # <-- Перенесите сюда
+from django.contrib.messages import constants as messages
 
 dotenv.load_dotenv()
 
@@ -79,7 +81,6 @@ WSGI_APPLICATION = 'task_manager.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-import dj_database_url
 
 if os.getenv('DATABASE_URL'):
     DATABASES = {
