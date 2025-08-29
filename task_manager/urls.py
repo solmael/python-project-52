@@ -18,22 +18,26 @@ from django.contrib.auth.views import LogoutView
 from django.urls import path
 
 from .views import (
+    CustomLoginView,
+    LabelCreateView,
+    LabelDeleteView,
+    LabelListView,
+    LabelUpdateView,
+    StatusCreateView,
+    StatusDeleteView,
+    StatusListView,
+    StatusUpdateView,
+    TaskCreateView,
+    TaskDeleteView,
+    TaskDetailView,
+    TaskListView,
+    TaskUpdateView,
+    UserCreateView,
+    UserDeleteView,
+    UsersListView,
+    UserUpdateView,
     index,
     logout_view,
-    UsersListView,
-    UserCreateView,
-    UserUpdateView,
-    UserDeleteView,
-    StatusListView,
-    StatusCreateView,
-    StatusUpdateView,
-    StatusDeleteView,
-    CustomLoginView,
-    TaskListView,
-    TaskCreateView,
-    TaskUpdateView,
-    TaskDeleteView,
-    TaskDetailView
 )
 
 urlpatterns = [
@@ -58,7 +62,13 @@ urlpatterns = [
     path('tasks/<int:pk>/update/', TaskUpdateView.as_view(), name='task_update'),
     path('tasks/<int:pk>/delete/', TaskDeleteView.as_view(), name='task_delete'),
     path('tasks/<int:pk>/', TaskDetailView.as_view(), name='task_detail'),
-    
+
+    # labels
+    path('labels/', LabelListView.as_view(), name='labels'),
+    path('labels/create/', LabelCreateView.as_view(), name='label_create'),
+    path('labels/<int:pk>/update/', LabelUpdateView.as_view(), name='label_update'),
+    path('labels/<int:pk>/delete/', LabelDeleteView.as_view(), name='label_delete'),
+
     # auth
     path('login/', CustomLoginView.as_view(
         template_name='task_manager/users/login.html',
