@@ -1,7 +1,8 @@
-from django.db import models
 from django.contrib.auth import get_user_model
+from django.db import models
+
+from .label import Label
 from .status import Status
-#from .label import Label
 
 User = get_user_model()
 
@@ -25,10 +26,10 @@ class Task(models.Model):
         blank=True,
         related_name='executor_tasks'
     )
-    # labels = models.ManyToManyField(
-    #     Label,
-    #     blank=True
-    # )
+    labels = models.ManyToManyField(
+        Label,
+        blank=True
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
