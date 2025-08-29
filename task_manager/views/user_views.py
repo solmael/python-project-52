@@ -1,10 +1,9 @@
+from django.contrib import messages
 from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
-from django.contrib import messages
-from django.contrib.auth.mixins import UserPassesTestMixin
-from django.shortcuts import redirect
 
 from task_manager.forms import CustomUserChangeForm, CustomUserCreationForm
 

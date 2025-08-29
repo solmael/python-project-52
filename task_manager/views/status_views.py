@@ -1,17 +1,12 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models.deletion import ProtectedError
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import (
-    ListView, 
-    CreateView, 
-    UpdateView, 
-    DeleteView
-)
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
-from django.db.models.deletion import ProtectedError
-from task_manager.models import Status
 from task_manager.forms import StatusForm
+from task_manager.models import Status
 
 
 class StatusListView(LoginRequiredMixin, ListView):
@@ -53,7 +48,7 @@ class StatusDeleteView(LoginRequiredMixin, DeleteView):
             messages.success(request, 'Статус успешно удален')
             return response
         except ProtectedError:
-            messages.error(request, 'Статус используется в задачах')
+            messages.error(request, 'Невозможно удалить статус, потому что он используется')
             return redirect('statuses')
         
     def get_context_data(self, **kwargs):

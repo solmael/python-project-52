@@ -1,7 +1,7 @@
-from django.contrib.auth.views import LoginView
-from django.contrib.auth import logout
-from django.shortcuts import redirect, render
 from django.contrib import messages
+from django.contrib.auth import logout
+from django.contrib.auth.views import LoginView
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 
 

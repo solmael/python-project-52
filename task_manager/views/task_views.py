@@ -1,55 +1,65 @@
+import django_filters
+from django import forms
 from django.contrib import messages
 from django.contrib.auth import get_user_model
-from task_manager.models import Status
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import (
-    ListView, 
-    CreateView, 
-    UpdateView, 
+    CreateView,
     DeleteView,
-    DetailView
+    DetailView,
+    UpdateView,
 )
+from django_filters.views import FilterView
 
-from task_manager.models import Task
 from task_manager.forms import TaskForm
+from task_manager.models import Label, Status, Task
 
 User = get_user_model()
 
 
-class TaskListView(LoginRequiredMixin, ListView):
+class TaskFilter(django_filters.FilterSet):
+    status = django_filters.ModelChoiceFilter(
+        queryset=Status.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+    executor = django_filters.ModelChoiceFilter(
+        queryset=User.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+    labels = django_filters.ModelChoiceFilter(
+        queryset=Label.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+    self_author = django_filters.BooleanFilter(
+        method='filter_self_author',
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        label='Только свои задачи'
+    )
+    
+    class Meta:
+        model = Task
+        fields = ['status', 'executor', 'labels']
+    
+    def filter_self_author(self, queryset, _, value):
+        if value and hasattr(self, 'request') and self.request.user.is_authenticated:
+            return queryset.filter(author=self.request.user)
+        return queryset
+
+
+class TaskListView(LoginRequiredMixin, FilterView):
     model = Task
     template_name = 'task_manager/tasks/list.html'
     context_object_name = 'tasks'
+    filterset_class = TaskFilter
     
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        
-        # filter
-        status_id = self.request.GET.get('status')
-        executor_id = self.request.GET.get('executor')
-        label_id = self.request.GET.get('label')
-        self_author = self.request.GET.get('self_author')
-        
-        if status_id:
-            queryset = queryset.filter(status_id=status_id)
-        if executor_id:
-            queryset = queryset.filter(executor_id=executor_id)
-        if label_id:
-            queryset = queryset.filter(labels__id=label_id)
-        if self_author == 'on':
-            queryset = queryset.filter(author=self.request.user)
-            
-        return queryset
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['self_author_checked'] = 'checked' if self.request.GET.get('self_author') == 'on' else ''
-        context['statuses'] = Status.objects.all()
-        context['users'] = User.objects.all()
-        # context['labels'] = Label.objects.all()
-        return context
+    def get_filterset_kwargs(self, filterset_class):
+        kwargs = super().get_filterset_kwargs(filterset_class)
+        if kwargs is None:
+            kwargs = {}
+        kwargs['request'] = self.request
+        return kwargs
 
 
 class TaskCreateView(LoginRequiredMixin, CreateView):
