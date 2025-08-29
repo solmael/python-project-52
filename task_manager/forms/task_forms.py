@@ -1,10 +1,11 @@
 from django import forms
 from django.contrib.auth import get_user_model
+
 from task_manager.models import (
-    Task, 
-    Status, 
-    # Label, 
-    )
+    Label,
+    Status,
+    Task,
+)
 
 User = get_user_model()
 
@@ -12,7 +13,7 @@ User = get_user_model()
 class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
-        fields = ['name', 'description', 'status', 'executor']
+        fields = ['name', 'description', 'status', 'executor', 'labels']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4}),
         }
@@ -32,5 +33,4 @@ class TaskForm(forms.ModelForm):
         
         self.fields['executor'].queryset = User.objects.all()
         
-        # label
-        # self.fields['labels'].queryset = Label.objects.all()
+        self.fields['labels'].queryset = Label.objects.all()
