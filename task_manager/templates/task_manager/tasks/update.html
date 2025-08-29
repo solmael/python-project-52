@@ -43,6 +43,12 @@
             {% bootstrap_field form.executor show_label=False %}
             {{ form.executor.errors }}
         </div>
+
+        <div class="mb-3">
+            <label for="{{ form.labels.id_for_label }}" class="form-label">Метки</label>
+            {% bootstrap_field form.labels show_label=False %}
+            {{ form.labels.errors }}
+        </div>
         
         <button type="submit" class="btn btn-primary">Изменить</button>
     </form>

@@ -5,6 +5,12 @@
 
 {% block content %}
 <style>
+    .task-name-link:hover {
+        color: #0d6efd;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
     .tasks-table {
         table-layout: fixed;
         width: 100%;
@@ -34,29 +40,47 @@
         width: 150px;
     }
     
-    @media (max-width: 768px) {
-        .tasks-table th:nth-child(2),
-        .tasks-table td:nth-child(2) {
-            max-width: 150px;
-            width: 150px;
-        }
-        
-        .tasks-table th:nth-child(3),
-        .tasks-table td:nth-child(3) {
-            max-width: 100px;
-            width: 100px;
-        }
-        
-        .tasks-table th:nth-child(4),
-        .tasks-table td:nth-child(4) {
-            max-width: 100px;
-            width: 100px;
-        }
+    .filter-section {
+        border: 1px solid #e4e4e4;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .form-group {
+        margin-bottom: 15px;
+    }
+    
+    .form-select {
+        border: 2px solid #ced4da;
+        padding: 8px 12px;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-position: right 0.5em top 50%;
+        background-size: 16px 16px;
+        background-repeat: no-repeat;
+    }
+
+    .form-select:focus {
+        border-color: #28a745;
+        box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25);
+    }
+
+    .form-check-input:checked {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+    
+    .btn-primary {
+        width: 100px;
     }
 </style>
 
 <div class="container mt-5">
-    <h1>Задачи</h1>
+    <div class="mb-4">
+        <h1>Задачи</h1>
+        <a href="{% url 'task_create' %}" class="btn btn-primary mt-2">Создать задачу</a>
+    </div>
     
     {% if messages %}
     <div class="messages mb-3">
@@ -68,55 +92,38 @@
     </div>
     {% endif %}
     
-    <div class="row mb-3">
-        <div class="col-md-9">
-            <form method="get" class="row g-3">
-                <div class="col-md-3">
-                    <select name="status" class="form-select">
-                        <option value="">Все статусы</option>
-                        {% for status in statuses %}
-                        <option value="{{ status.id }}" {% if request.GET.status|add:"0" == status.id|add:"0" %}selected{% endif %}>
-                            {{ status.name }}
-                        </option>
-                        {% endfor %}
-                    </select>
+    <div class="filter-section">
+        <form method="get" class="row g-3">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="{{ filter.form.status.id_for_label }}">Статус</label>
+                    {% bootstrap_field filter.form.status show_label=False %}
                 </div>
-                <div class="col-md-3">
-                    <select name="executor" class="form-select">
-                        <option value="">Все исполнители</option>
-                        {% for user in users %}
-                        <option value="{{ user.id }}" {% if request.GET.executor|add:"0" == user.id|add:"0" %}selected{% endif %}>
-                            {{ user.username }}
-                        </option>
-                        {% endfor %}
-                    </select>
+                
+                <div class="form-group">
+                    <label for="{{ filter.form.executor.id_for_label }}">Исполнитель</label>
+                    {% bootstrap_field filter.form.executor show_label=False %}
                 </div>
-                <div class="col-md-3">
-                    <select name="label" class="form-select">
-                        <option value="">Все метки</option>
-                        {% for label in labels %}
-                        <option value="{{ label.id }}" {% if request.GET.label|add:"0" == label.id|add:"0" %}selected{% endif %}>
-                            {{ label.name }}
-                        </option>
-                        {% endfor %}
-                    </select>
+                
+                <div class="form-group">
+                    <label for="{{ filter.form.labels.id_for_label }}">Метка</label>
+                    {% bootstrap_field filter.form.labels show_label=False %}
                 </div>
-                <div class="col-md-3 d-flex align-items-center">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="self_author" name="self_author" {% if request.GET.self_author %}checked{% endif %}>
-                        <label class="form-check-label" for="self_author">
-                            Только мои задачи
-                        </label>
-                    </div>
+                
+                <div class="form-check mb-3">
+                    <input type="checkbox" 
+                        name="{{ filter.form.self_author.name }}" 
+                        id="{{ filter.form.self_author.id_for_label }}" 
+                        class="form-check-input" 
+                        {% if filter.form.self_author.value %}checked{% endif %}>
+                    <label class="form-check-label" for="{{ filter.form.self_author.id_for_label }}">
+                        Только свои задачи
+                    </label>
                 </div>
-                <div class="col-md-3">
-                    <button type="submit" class="btn btn-primary">Применить</button>
-                </div>
-            </form>
-        </div>
-        <div class="col-md-3 text-end">
-            <a href="{% url 'task_create' %}" class="btn btn-primary">Создать задачу</a>
-        </div>
+                
+                <button type="submit" class="btn btn-primary mt-3">Показать</button>
+            </div>
+        </form>
     </div>
 
     <table class="table tasks-table">
@@ -125,25 +132,24 @@
                 <th>ID</th>
                 <th>Имя</th>
                 <th>Статус</th>
-                <th>Исполнитель</th>
                 <th>Автор</th>
+                <th>Исполнитель</th>
                 <th>Дата создания</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
-            {% for task in tasks %}
+            {% for task in filter.qs %}
             <tr>
                 <td>{{ task.id }}</td>
-                <td>{{ task.name }}</td>
+                <td><a href="{% url 'task_detail' task.id %}" class="task-name-link">{{ task.name }}</a></td>
                 <td>{{ task.status.name }}</td>
-                <td>{{ task.executor.username|default:"" }}</td>
                 <td>{{ task.author.username }}</td>
+                <td>{{ task.executor.username|default:"" }}</td>
                 <td>{{ task.created_at|date:"d.m.Y H:i" }}</td>
                 <td>
-                    <a href="{% url 'task_detail' task.id %}" class="btn btn-sm btn-primary">Просмотр</a>
                     <a href="{% url 'task_update' task.id %}" class="btn btn-sm btn-primary">Изменить</a>
-                    <a href="{% url 'task_delete' task.id %}" class="btn btn-sm btn-danger mt-1">Удалить</a>
+                    <a href="{% url 'task_delete' task.id %}" class="btn btn-sm btn-danger">Удалить</a>
                 </td>
             </tr>
             {% empty %}
