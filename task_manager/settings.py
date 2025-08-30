@@ -29,13 +29,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/  
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv(
-    'SECRET_KEY', 
-    'django-insecure-9f_2qp-s4g-!6u6=nzwsxjqb!k*+88z75f*_pd_ho9z8yq1#n+'
-    )
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'webserver').split(',')
 
@@ -55,7 +52,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
-    'rollbar.contrib.django.middleware.RollbarNotifierMiddlewareExcluding404',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -79,8 +75,9 @@ TEMPLATES = [
             ],
             'libraries': {
                 'i18n': 'django.templatetags.i18n',
-                'bootstrap5': 'django_bootstrap5.templatetags.'
-                'django_bootstrap5',
+                'bootstrap5': (
+                    'django_bootstrap5.templatetags.django_bootstrap5'
+                ),
             }
         },
     },
@@ -162,8 +159,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 if not DEBUG:
-    STATICFILES_STORAGE = 'whitenoise.storage.'
-    'CompressedManifestStaticFilesStorage'
+    STATICFILES_STORAGE = (
+        'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    )
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -181,6 +179,28 @@ MESSAGE_TAGS = {
 # Rollbar configuration
 ROLLBAR_ACCESS_TOKEN = os.getenv('ROLLBAR_ACCESS_TOKEN')
 if ROLLBAR_ACCESS_TOKEN:
+    # Добавляем Rollbar middleware только если токен установлен
+    if ROLLBAR_ACCESS_TOKEN:
+        try:
+            security_index = MIDDLEWARE.index(
+                'django.middleware.security.SecurityMiddleware'
+                )
+            try:
+                whitenoise_index = MIDDLEWARE.index(
+                    'whitenoise.middleware.WhiteNoiseMiddleware'
+                    )
+                insert_index = whitenoise_index + 1
+            except ValueError:
+                insert_index = security_index + 1
+            MIDDLEWARE.insert(
+                insert_index, 
+                'rollbar.contrib.django.middleware.RollbarNotifierMiddlewareExcluding404'
+                )
+        except ValueError:
+            MIDDLEWARE.insert(
+                0, 
+                'rollbar.contrib.django.middleware.RollbarNotifierMiddlewareExcluding404'
+                )
     rollbar.init(
         ROLLBAR_ACCESS_TOKEN,
         os.getenv('ROLLBAR_ENVIRONMENT', 'development'),
