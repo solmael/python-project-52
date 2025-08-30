@@ -14,7 +14,11 @@ from pathlib import Path
 
 import dj_database_url
 import dotenv
+import rollbar
 from django.contrib.messages import constants as messages
+from django.core.exceptions import PermissionDenied
+from django.http import Http404
+from django.utils.datastructures import MultiValueDictKeyError
 
 dotenv.load_dotenv()
 
@@ -51,6 +55,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'rollbar.contrib.django.middleware.RollbarNotifierMiddlewareExcluding404',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -172,3 +177,71 @@ MESSAGE_TAGS = {
     messages.WARNING: 'alert-warning',
     messages.ERROR: 'alert-danger',
 }
+
+# Rollbar configuration
+ROLLBAR_ACCESS_TOKEN = os.getenv('ROLLBAR_ACCESS_TOKEN')
+if ROLLBAR_ACCESS_TOKEN:
+    MIDDLEWARE = [
+        'rollbar.contrib.django.middleware.RollbarNotifierMiddlewareExcluding404',
+    ] + MIDDLEWARE
+    
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'formatters': {
+            'verbose': {
+                'format': '%(levelname)s %(asctime)s %(module)s'
+                 ' %(process)d %(thread)d %(message)s'
+            },
+        },
+        'handlers': {
+            'rollbar': {
+                'level': 'ERROR',
+                'class': 'rollbar.logger.RollbarHandler',
+                'access_token': ROLLBAR_ACCESS_TOKEN,
+                'environment': os.getenv('ROLLBAR_ENVIRONMENT', 'development'),
+            },
+            'console': {
+                'class': 'logging.StreamHandler',
+            },
+        },
+        'loggers': {
+            'django': {
+                'handlers': ['rollbar', 'console'],
+                'level': 'ERROR',
+                'propagate': True,
+            },
+            'django.request': {
+                'handlers': ['rollbar', 'console'],
+                'level': 'ERROR',
+                'propagate': False,
+            },
+            'task_manager': {
+                'handlers': ['rollbar', 'console'],
+                'level': 'ERROR',
+                'propagate': True,
+            },
+        }
+    }
+    
+    # Инициализация Rollbar
+    rollbar.init(
+        ROLLBAR_ACCESS_TOKEN,
+        os.getenv('ROLLBAR_ENVIRONMENT', 'development'),
+        enabled=(
+            os.getenv('ROLLBAR_ENVIRONMENT', 'development') == 'production'
+            )
+    )
+
+    # # Дополнительная настройка для отслеживания пользователей
+    ROLLBAR = {
+        'access_token': ROLLBAR_ACCESS_TOKEN,
+        'environment': os.getenv('ROLLBAR_ENVIRONMENT', 'development'),
+        'root': BASE_DIR,
+        'exception_level_filters': [
+            (Http404, 'warning'),
+            (PermissionDenied, 'warning'),
+            (MultiValueDictKeyError, 'warning'),
+        ],
+        'person_fn': 'task_manager.rollbar.person',
+    }
