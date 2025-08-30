@@ -11,8 +11,8 @@ class Label(models.Model):
         return self.name
         
     def delete(self, *args, **kwargs):
-        Task = apps.get_model('task_manager', 'Task')
+        task = apps.get_model('task__manager', 'task')
         
-        if Task.objects.filter(labels=self).exists():
-            raise ProtectedError(None, Task.objects.filter(labels=self))
+        if task.objects.filter(labels=self).exists():
+            raise ProtectedError(None, task.objects.filter(labels=self))
         super().delete(*args, **kwargs)
