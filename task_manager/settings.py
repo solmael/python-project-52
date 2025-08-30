@@ -240,9 +240,3 @@ if ROLLBAR_ACCESS_TOKEN:
             },
         }
     }
-
-    if ROLLBAR_ACCESS_TOKEN and os.getenv('ROLLBAR_ENVIRONMENT', 'development') == 'development':
-        try:
-            rollbar.report_message('Rollbar is configured correctly', 'info')
-        except Exception as e:
-            print(f"Error sending test message to Rollbar: {e}")
