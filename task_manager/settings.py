@@ -227,3 +227,10 @@ if ROLLBAR_ACCESS_TOKEN:
             },
         }
     }
+
+
+try:
+    a = None
+    a.hello()
+except Exception as e:
+    rollbar.report_exc_info()
