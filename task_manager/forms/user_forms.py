@@ -1,7 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
-from django.contrib.auth.models import User
 
 from task_manager.models import Profile
 
@@ -11,7 +10,13 @@ User = get_user_model()
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'password1', 'password2')
+        fields = (
+            'username', 
+            'first_name', 
+            'last_name', 
+            'password1', 
+            'password2'
+            )
         labels = {
             'first_name': 'Имя',
             'last_name': 'Фамилия'
