@@ -227,5 +227,3 @@ if ROLLBAR_ACCESS_TOKEN:
             },
         }
     }
-
-rollbar.report_message('Rollbar is configured correctly', 'info')
