@@ -181,26 +181,14 @@ MESSAGE_TAGS = {
 # Rollbar configuration
 ROLLBAR_ACCESS_TOKEN = os.getenv('ROLLBAR_ACCESS_TOKEN')
 if ROLLBAR_ACCESS_TOKEN:
-    # Добавляем middleware для обработки ошибок
-    try:
-        # Найти позицию для вставки
-        security_index = MIDDLEWARE.index('django.middleware.security.SecurityMiddleware')
-        try:
-            whitenoise_index = MIDDLEWARE.index('whitenoise.middleware.WhiteNoiseMiddleware')
-            insert_index = whitenoise_index + 1
-        except ValueError:
-            insert_index = security_index + 1
-            
-        MIDDLEWARE.insert(insert_index, 'rollbar.contrib.django.middleware.RollbarNotifierMiddlewareExcluding404')
-    except ValueError:
-        MIDDLEWARE.insert(0, 'rollbar.contrib.django.middleware.RollbarNotifierMiddlewareExcluding404')
-    
-    # Инициализация Rollbar
     rollbar.init(
         ROLLBAR_ACCESS_TOKEN,
         os.getenv('ROLLBAR_ENVIRONMENT', 'development'),
         root=BASE_DIR,
-        code_version='1.0.0',  # Добавьте версию вашего приложения
+        code_version='1.0.0',
+        enabled=(os.getenv(
+            'ROLLBAR_ENVIRONMENT', 'development') == 'production'
+            ),
         exception_level_filters=[
             (Http404, 'warning'),
             (PermissionDenied, 'warning'),
@@ -209,7 +197,6 @@ if ROLLBAR_ACCESS_TOKEN:
         person_fn='task_manager.rollbar.person',
     )
     
-    # Настройка логирования
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': False,
@@ -240,3 +227,5 @@ if ROLLBAR_ACCESS_TOKEN:
             },
         }
     }
+
+rollbar.report_message('Rollbar is configured correctly', 'info')
