@@ -43,7 +43,10 @@ class TaskFilter(django_filters.FilterSet):
         fields = ['status', 'executor', 'labels']
     
     def filter_self_author(self, queryset, _, value):
-        if value and hasattr(self, 'request') and self.request.user.is_authenticated:
+        if value and hasattr(
+            self, 
+            'request'
+            ) and self.request.user.is_authenticated:
             return queryset.filter(author=self.request.user)
         return queryset
 
@@ -105,9 +108,15 @@ class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     
     def handle_no_permission(self):
         if self.request.user.is_authenticated:
-            messages.error(self.request, 'У вас нет прав для удаления этой задачи')
+            messages.error(
+                self.request, 
+                'У вас нет прав для удаления этой задачи'
+                )
         else:
-            messages.error(self.request, 'Вы не авторизованы! Пожалуйста, выполните вход.')
+            messages.error(
+                self.request, 
+                'Вы не авторизованы! Пожалуйста, выполните вход.'
+                )
         return redirect('tasks')
     
     def delete(self, request, *args, **kwargs):

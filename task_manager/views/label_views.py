@@ -43,5 +43,8 @@ class LabelDeleteView(LoginRequiredMixin, DeleteView):
         try:
             return super().post(request, *args, **kwargs)
         except ProtectedError:
-            messages.error(request, 'Невозможно удалить метку, потому что она используется')
+            messages.error(
+                request, 
+                'Невозможно удалить метку, потому что она используется'
+                )
             return redirect('labels')

@@ -42,10 +42,16 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     
     def handle_no_permission(self):
         if self.request.user.is_authenticated:
-            messages.error(self.request, "У вас нет прав для изменения другого пользователя.")
+            messages.error(
+                self.request, 
+                "У вас нет прав для изменения другого пользователя."
+                )
             return redirect('users')
         else:
-            messages.error(self.request, "Вы не авторизованы! Пожалуйста, выполните вход.")
+            messages.error(
+                self.request, 
+                "Вы не авторизованы! Пожалуйста, выполните вход."
+                )
             return super().handle_no_permission()
 
 
@@ -59,10 +65,16 @@ class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     
     def handle_no_permission(self):
         if self.request.user.is_authenticated:
-            messages.error(self.request, "У вас нет прав для удаления другого пользователя.")
+            messages.error(
+                self.request, 
+                "У вас нет прав для удаления другого пользователя."
+                )
             return redirect('users')
         else:
-            messages.error(self.request, "Вы не авторизованы! Пожалуйста, выполните вход.")
+            messages.error(
+                self.request, 
+                "Вы не авторизованы! Пожалуйста, выполните вход."
+                )
             return super().handle_no_permission()
     
     def delete(self, request, *args, **kwargs):
@@ -86,6 +98,6 @@ class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def post(self, request, *args, **kwargs):
         user = self.get_object()
         if user.author_tasks.exists() or user.executor_tasks.exists():
-            messages.error(request, 'Невозможно удалить пользователя, потому что он связан с задачами.')
+            messages.error(request, 'пользователь связан с задачами.')
             return redirect('users')
         return super().post(request, *args, **kwargs)
