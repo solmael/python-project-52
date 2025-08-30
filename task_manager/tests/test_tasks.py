@@ -93,7 +93,10 @@ class TaskCRUDTest(TestCase):
         }
         
         # post
-        response = self.client.post(reverse('task_update', args=[self.task.id]), data)
+        response = self.client.post(
+            reverse('task_update', args=[self.task.id]), 
+            data
+            )
         self.assertRedirects(response, reverse('tasks'))
         
         # check data
@@ -120,7 +123,10 @@ class TaskCRUDTest(TestCase):
     
     def test_task_delete_by_non_author(self):
         # another user
-        self.client.login(username=self.other_user.username, password='Newpass123+!')
+        self.client.login(
+            username=self.other_user.username, 
+            password='Newpass123+!'
+            )
         
         # try to delete task
         response = self.client.post(reverse('task_delete', args=[self.task.id]))
@@ -153,7 +159,9 @@ class TaskCRUDTest(TestCase):
     def test_task_filtering_by_executor(self):
         self.client.login(username=self.user.username, password='Newpass123+!')
         
-        response = self.client.get(reverse('tasks'), {'executor': self.other_user.id})
+        response = self.client.get(
+            reverse('tasks'), {'executor': self.other_user.id}
+            )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.task.name)
 

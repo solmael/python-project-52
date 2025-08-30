@@ -40,7 +40,10 @@ class UserCRUDTest(TestCase):
             'first_name': 'Updated',
             'last_name': 'User'
         }
-        response = self.client.post(reverse('user_update', args=[self.user.id]), data)
+        response = self.client.post(
+            reverse('user_update', args=[self.user.id]), 
+            data
+            )
         self.assertRedirects(response, reverse('users'))
         
         self.user.refresh_from_db()

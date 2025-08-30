@@ -9,7 +9,10 @@ User = get_user_model()
 
 class StatusCRUDTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='testuser', password='testpass')
+        self.user = User.objects.create_user(
+            username='testuser', 
+            password='testpass'
+            )
         self.status = Status.objects.create(name='Test Status')
         self.client.login(username='testuser', password='testpass')
     
@@ -26,12 +29,16 @@ class StatusCRUDTest(TestCase):
     
     def test_status_update_view(self):
         data = {'name': 'Updated Status'}
-        response = self.client.post(reverse('status_update', args=[self.status.id]), data)
+        response = self.client.post(
+            reverse('status_update', args=[self.status.id]), data
+            )
         self.assertRedirects(response, reverse('statuses'))
         self.status.refresh_from_db()
         self.assertEqual(self.status.name, 'Updated Status')
     
     def test_status_delete_view(self):
-        response = self.client.post(reverse('status_delete', args=[self.status.id]))
+        response = self.client.post(
+            reverse('status_delete', args=[self.status.id])
+            )
         self.assertRedirects(response, reverse('statuses'))
         self.assertFalse(Status.objects.filter(id=self.status.id).exists())
