@@ -178,72 +178,71 @@ MESSAGE_TAGS = {
 
 # Rollbar configuration
 ROLLBAR_ACCESS_TOKEN = os.getenv('ROLLBAR_ACCESS_TOKEN')
+# Добавляем Rollbar middleware только если токен установлен
 if ROLLBAR_ACCESS_TOKEN:
-    # Добавляем Rollbar middleware только если токен установлен
-    if ROLLBAR_ACCESS_TOKEN:
+    try:
+        security_index = MIDDLEWARE.index(
+            'django.middleware.security.SecurityMiddleware'
+            )
         try:
-            security_index = MIDDLEWARE.index(
-                'django.middleware.security.SecurityMiddleware'
+            whitenoise_index = MIDDLEWARE.index(
+                'whitenoise.middleware.WhiteNoiseMiddleware'
                 )
-            try:
-                whitenoise_index = MIDDLEWARE.index(
-                    'whitenoise.middleware.WhiteNoiseMiddleware'
-                    )
-                insert_index = whitenoise_index + 1
-            except ValueError:
-                insert_index = security_index + 1
-            MIDDLEWARE.insert(
-                insert_index, 
-                'rollbar.contrib.django.middleware.RollbarNotifierMiddlewareExcluding404'
-                )
+            insert_index = whitenoise_index + 1
         except ValueError:
-            MIDDLEWARE.insert(
-                0, 
-                'rollbar.contrib.django.middleware.RollbarNotifierMiddlewareExcluding404'
-                )
-    rollbar.init(
-        ROLLBAR_ACCESS_TOKEN,
-        os.getenv('ROLLBAR_ENVIRONMENT', 'development'),
-        root=BASE_DIR,
-        code_version='1.0.0',
-        enabled=(os.getenv(
-            'ROLLBAR_ENVIRONMENT', 'development') == 'production'
-            ),
-        exception_level_filters=[
-            (Http404, 'warning'),
-            (PermissionDenied, 'warning'),
-            (MultiValueDictKeyError, 'warning'),
-        ],
-        person_fn='task_manager.rollbar.person',
-    )
-    
-    LOGGING = {
-        'version': 1,
-        'disable_existing_loggers': False,
-        'handlers': {
-            'rollbar': {
-                'level': 'ERROR',
-                'class': 'rollbar.logger.RollbarHandler',
-            },
-            'console': {
-                'class': 'logging.StreamHandler',
-            },
+            insert_index = security_index + 1
+        MIDDLEWARE.insert(
+            insert_index, 
+            'rollbar.contrib.django.middleware.RollbarNotifierMiddlewareExcluding404'
+            )
+    except ValueError:
+        MIDDLEWARE.insert(
+            0, 
+            'rollbar.contrib.django.middleware.RollbarNotifierMiddlewareExcluding404'
+            )
+rollbar.init(
+    ROLLBAR_ACCESS_TOKEN,
+    os.getenv('ROLLBAR_ENVIRONMENT', 'development'),
+    root=BASE_DIR,
+    code_version='1.0.0',
+    enabled=(os.getenv(
+        'ROLLBAR_ENVIRONMENT', 'development') == 'production'
+        ),
+    exception_level_filters=[
+        (Http404, 'warning'),
+        (PermissionDenied, 'warning'),
+        (MultiValueDictKeyError, 'warning'),
+    ],
+    person_fn='task_manager.rollbar.person',
+)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'rollbar': {
+            'level': 'ERROR',
+            'class': 'rollbar.logger.RollbarHandler',
         },
-        'loggers': {
-            'django': {
-                'handlers': ['rollbar', 'console'],
-                'level': 'ERROR',
-                'propagate': True,
-            },
-            'django.request': {
-                'handlers': ['rollbar', 'console'],
-                'level': 'ERROR',
-                'propagate': False,
-            },
-            'task_manager': {
-                'handlers': ['rollbar', 'console'],
-                'level': 'ERROR',
-                'propagate': True,
-            },
-        }
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['rollbar', 'console'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+        'django.request': {
+            'handlers': ['rollbar', 'console'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'task_manager': {
+            'handlers': ['rollbar', 'console'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
     }
+}
