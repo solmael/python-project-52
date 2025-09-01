@@ -4,8 +4,8 @@ from django.db import migrations
 
 
 def populate_description(apps, schema_editor):
-    Task = apps.get_model('task_manager', 'Task')
-    for task in Task.objects.filter(description__isnull=True):
+    task_model = apps.get_model('task_manager', 'task_model')
+    for task in task_model.objects.filter(description__isnull=True):
         task.description = ''
         task.save()
 
