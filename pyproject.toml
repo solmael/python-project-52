@@ -23,4 +23,3 @@ package-dir = { "hexlet-code" = "task_manager" }
 
 [tool.uv]
 index-url = "https://pypi.org/simple"
-package = true
