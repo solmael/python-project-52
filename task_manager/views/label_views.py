@@ -21,6 +21,10 @@ class LabelCreateView(LoginRequiredMixin, CreateView):
     template_name = 'task_manager/labels/create.html'
     success_url = reverse_lazy('labels')
 
+    def form_valid(self, form):
+        messages.success(self.request, 'Метка успешно создана')
+        return super().form_valid(form)
+
 
 class LabelUpdateView(LoginRequiredMixin, UpdateView):
     model = Label
@@ -32,7 +36,10 @@ class LabelUpdateView(LoginRequiredMixin, UpdateView):
 class LabelDeleteView(LoginRequiredMixin, DeleteView):
     model = Label
     template_name = 'task_manager/labels/delete.html'
-    success_url = reverse_lazy('labels')
+    
+    def get_success_url(self):
+        messages.success(self.request, 'Метка успешно удалена')
+        return reverse_lazy('labels')
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
