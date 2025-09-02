@@ -98,6 +98,9 @@ class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def post(self, request, *args, **kwargs):
         user = self.get_object()
         if user.author_tasks.exists() or user.executor_tasks.exists():
-            messages.error(request, 'пользователь связан с задачами.')
+            messages.error(
+                request, 
+                'Невозможно удалить пользователя, потому что он используется'
+                )
             return redirect('users')
         return super().post(request, *args, **kwargs)
