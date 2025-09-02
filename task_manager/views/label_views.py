@@ -32,6 +32,10 @@ class LabelUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'task_manager/labels/update.html'
     success_url = reverse_lazy('labels')
 
+    def form_valid(self, form):
+        messages.success(self.request, 'Метка успешно изменена')
+        return super().form_valid(form)
+
 
 class LabelDeleteView(LoginRequiredMixin, DeleteView):
     model = Label
