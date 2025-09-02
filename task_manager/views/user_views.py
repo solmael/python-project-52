@@ -53,6 +53,14 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
                 "Вы не авторизованы! Пожалуйста, выполните вход."
                 )
             return super().handle_no_permission()
+        
+    def get_object(self, queryset=None):
+        return self.request.user
+    
+    def form_valid(self, form):
+        self.request.session_update = bool(form.cleaned_data.get('password1'))
+        messages.success(self.request, 'Пользователь успешно изменен')
+        return super().form_valid(form)
 
 
 class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
