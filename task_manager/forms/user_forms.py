@@ -39,7 +39,7 @@ class CustomUserCreationForm(UserCreationForm):
 
 class CustomUserChangeForm(UserChangeForm):
     password1 = forms.CharField(
-        label="Новый пароль",
+        label="Пароль",
         widget=forms.PasswordInput,
         required=False,
         help_text="Оставьте пустым, если не хотите менять пароль."
