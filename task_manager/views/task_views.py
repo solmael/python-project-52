@@ -100,7 +100,10 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
 class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Task
     template_name = 'task_manager/tasks/delete.html'
-    success_url = reverse_lazy('tasks')
+    
+    def get_success_url(self):
+        messages.success(self.request, 'Задача успешно удалена')
+        return reverse_lazy('tasks')
     
     def test_func(self):
         # user == task author
@@ -111,18 +114,13 @@ class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             messages.error(
                 self.request, 
                 'У вас нет прав для удаления этой задачи'
-                )
+            )
         else:
             messages.error(
                 self.request, 
                 'Вы не авторизованы! Пожалуйста, выполните вход.'
-                )
+            )
         return redirect('tasks')
-    
-    def delete(self, request, *args, **kwargs):
-        response = super().delete(request, *args, **kwargs)
-        messages.success(request, 'Задача успешно удалена')
-        return response
 
 
 class TaskDetailView(LoginRequiredMixin, DetailView):
