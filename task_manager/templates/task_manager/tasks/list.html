@@ -97,17 +97,17 @@
             <div class="col-md-12">
                 <div class="form-group">
                     <label for="{{ filter.form.status.id_for_label }}">Статус</label>
-                    {% bootstrap_field filter.form.status show_label=False %}
+                    {% bootstrap_field filter.form.status show_label=False attrs='{"data-testid": "status-filter"}' %}
                 </div>
                 
                 <div class="form-group">
                     <label for="{{ filter.form.executor.id_for_label }}">Исполнитель</label>
-                    {% bootstrap_field filter.form.executor show_label=False %}
+                    {% bootstrap_field filter.form.executor show_label=False attrs='{"data-testid": "executor-filter"}' %}
                 </div>
                 
                 <div class="form-group">
                     <label for="{{ filter.form.labels.id_for_label }}">Метка</label>
-                    {% bootstrap_field filter.form.labels show_label=False %}
+                    {% bootstrap_field filter.form.labels show_label=False attrs='{"data-testid": "label-filter"}' %}
                 </div>
                 
                 <div class="form-check mb-3">
@@ -115,13 +115,14 @@
                         name="{{ filter.form.self_author.name }}" 
                         id="{{ filter.form.self_author.id_for_label }}" 
                         class="form-check-input" 
+                        data-testid="self-author-filter"
                         {% if filter.form.self_author.value %}checked{% endif %}>
                     <label class="form-check-label" for="{{ filter.form.self_author.id_for_label }}">
                         Только свои задачи
                     </label>
                 </div>
                 
-                <button type="submit" class="btn btn-primary mt-3">Показать</button>
+                <button type="submit" class="btn btn-primary mt-3" data-testid="filter-submit">Показать</button>
             </div>
         </form>
     </div>
