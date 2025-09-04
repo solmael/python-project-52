@@ -21,27 +21,42 @@
         {% csrf_token %}
         
         <div class="mb-3">
-            {% bootstrap_field form.name show_label=True %}
+            <div class="input-group">
+                <div class="input-group-text">Имя</div>
+                {% bootstrap_field form.name show_label=False %}
+            </div>
             {{ form.name.errors }}
         </div>
         
         <div class="mb-3">
-            {% bootstrap_field form.description show_label=True %}
+            <div class="input-group">
+                <div class="input-group-text">Описание</div>
+                {% bootstrap_field form.description show_label=False %}
+            </div>
             {{ form.description.errors }}
         </div>
         
         <div class="mb-3">
-            {% bootstrap_field form.status show_label=True %}
+            <div class="input-group">
+                <div class="input-group-text">Статус</div>
+                {% bootstrap_field form.status show_label=False %}
+            </div>
             {{ form.status.errors }}
         </div>
         
         <div class="mb-3">
-            {% bootstrap_field form.executor show_label=True %}
+            <div class="input-group">
+                <div class="input-group-text">Исполнитель</div>
+                {% bootstrap_field form.executor show_label=False %}
+            </div>
             {{ form.executor.errors }}
         </div>
 
         <div class="mb-3">
-            {% bootstrap_field form.labels show_label=True %}
+            <div class="input-group">
+                <div class="input-group-text">Метки</div>
+                {% bootstrap_field form.labels show_label=False %}
+            </div>
             {{ form.labels.errors }}
         </div>
         
