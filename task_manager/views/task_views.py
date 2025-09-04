@@ -19,13 +19,23 @@ from task_manager.models import Label, Status, Task
 User = get_user_model()
 
 
+class UserChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        full_name = f"{obj.first_name} {obj.last_name}".strip()
+        return full_name if full_name else obj.username
+
+
+class UserChoiceFilter(django_filters.ModelChoiceFilter):
+    field_class = UserChoiceField
+
+
 class TaskFilter(django_filters.FilterSet):
     status = django_filters.ModelChoiceFilter(
         queryset=Status.objects.all(),
         widget=forms.Select(attrs={'class': 'form-select'}),
         label='Статус'
     )
-    executor = django_filters.ModelChoiceFilter(
+    executor = UserChoiceFilter(
         queryset=User.objects.all(),
         widget=forms.Select(attrs={'class': 'form-select'}),
         label='Исполнитель'
