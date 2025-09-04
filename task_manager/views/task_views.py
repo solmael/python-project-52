@@ -22,15 +22,18 @@ User = get_user_model()
 class TaskFilter(django_filters.FilterSet):
     status = django_filters.ModelChoiceFilter(
         queryset=Status.objects.all(),
-        widget=forms.Select(attrs={'class': 'form-select'})
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        label='Статус'
     )
     executor = django_filters.ModelChoiceFilter(
         queryset=User.objects.all(),
-        widget=forms.Select(attrs={'class': 'form-select'})
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        label='Исполнитель'
     )
     labels = django_filters.ModelChoiceFilter(
         queryset=Label.objects.all(),
-        widget=forms.Select(attrs={'class': 'form-select'})
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        label='Метка'
     )
     self_author = django_filters.BooleanFilter(
         method='filter_self_author',
@@ -40,7 +43,7 @@ class TaskFilter(django_filters.FilterSet):
     
     class Meta:
         model = Task
-        fields = ['status', 'executor', 'labels']
+        fields = ['status', 'executor', 'labels', 'self_author']
     
     def filter_self_author(self, queryset, _, value):
         if value and hasattr(
