@@ -19,7 +19,10 @@ class TaskForm(forms.ModelForm):
         }
         labels = {
             'name': 'Имя',
-            'description': 'Описание'
+            'description': 'Описание',
+            'status': 'Статус',
+            'executor': 'Исполнитель',
+            'labels': 'Метки'
         }
 
     def __init__(self, *args, **kwargs):
