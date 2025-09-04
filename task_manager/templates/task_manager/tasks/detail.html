@@ -22,8 +22,8 @@
                 </div>
                 <div class="card-body">
                     <p><strong>Статус:</strong> {{ task.status.name }}</p>
-                    <p><strong>Исполнитель:</strong> {{ task.executor.username|default:"Не назначен" }}</p>
-                    <p><strong>Автор:</strong> {{ task.author.username }}</p>
+                    <p><strong>Исполнитель:</strong> {% if task.executor %}{{ task.executor.get_full_name|default:task.executor.username }}{% else %}Не назначен{% endif %}</p>
+                    <p><strong>Автор:</strong> {{ task.author.get_full_name|default:task.author.username }}</p>
                     <p><strong>Дата создания:</strong> {{ task.created_at|date:"d.m.Y H:i" }}</p>
                     
                     {% if task.labels.exists %}
