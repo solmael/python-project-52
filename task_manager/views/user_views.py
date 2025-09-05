@@ -45,17 +45,14 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             messages.error(
                 self.request, 
                 "У вас нет прав для изменения другого пользователя."
-                )
+            )
             return redirect('users')
         else:
             messages.error(
                 self.request, 
                 "Вы не авторизованы! Пожалуйста, выполните вход."
-                )
-            return super().handle_no_permission()
-        
-    def get_object(self, queryset=None):
-        return self.request.user
+            )
+            return redirect('login')
     
     def form_valid(self, form):
         self.request.session_update = bool(form.cleaned_data.get('password1'))
