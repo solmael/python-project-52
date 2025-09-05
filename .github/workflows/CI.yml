@@ -1,0 +1,72 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: sqlite:///./db.sqlite3
+      BASE_URL: http://webserver:9000
+
+    services:
+      db:
+        image: postgres:15
+        env:
+          POSTGRES_DB: test_db
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y make gettext libgtk-3-0 libx11-xcb1 libdbus-glib-1-2 libxt6 libxss1 libatspi2.0-0 libxcomposite1 libxdamage1 libxrandr2 libgbm1 libasound2 libu2f-udev
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v2
+
+      - name: Install dependencies
+        run: |
+          uv venv
+          uv pip install -r requirements.txt
+
+      - name: Install Playwright
+        run: |
+          uv run playwright install chromium
+          uv run playwright install-deps chromium
+
+      - name: Apply database migrations
+        run: |
+          make migrate
+
+      - name: Run tests
+        run: |
+          make test
+        env:
+          DATABASE_URL: postgres://test_user:test_password@localhost:5432/test_db
+          PLAYWRIGHT_BROWSERS_PATH: 0
+
+      - name: Lint code
+        run: |
+          make lint
