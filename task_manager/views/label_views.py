@@ -51,11 +51,11 @@ class LabelDeleteView(LoginRequiredMixin, DeleteView):
         return context
     
     def post(self, request, *args, **kwargs):
-        try:
-            return super().post(request, *args, **kwargs)
-        except ProtectedError:
+        label = self.get_object()
+        if label.task_set.exists():
             messages.error(
                 request, 
                 'Невозможно удалить метку, потому что она используется'
-                )
+            )
             return redirect('labels')
+        return super().post(request, *args, **kwargs)
