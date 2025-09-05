@@ -1,10 +1,9 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views import View
-from django.views.generic import CreateView, ListView, UpdateView
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from task_manager.forms import CustomUserChangeForm, CustomUserCreationForm
 
@@ -64,10 +63,13 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return super().form_valid(form)
 
 
-class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, View):
+class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = User
+    template_name = 'task_manager/users/delete.html'
+    success_url = reverse_lazy('users')
+    
     def test_func(self):
-        user = self.get_object()
-        return user == self.request.user
+        return self.get_object() == self.request.user
     
     def handle_no_permission(self):
         if self.request.user.is_authenticated:
@@ -83,9 +85,6 @@ class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, View):
             )
             return redirect('login')
     
-    def get_object(self):
-        return get_object_or_404(User, pk=self.kwargs['pk'])
-    
     def get(self, request, *args, **kwargs):
         user = self.get_object()
         
@@ -96,11 +95,17 @@ class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, View):
             )
             return redirect('users')
         
-        username = user.username
+        return super().get(request, *args, **kwargs)
+    
+    def get_success_url(self):
+        messages.success(self.request, "Пользователь успешно удален")
+        return reverse_lazy('users')
+    
+    def delete(self, request, *args, **kwargs):
+        username = self.get_object().username
         request.session['deleted_username'] = username
-        request.session['self_deleted'] = True
         
-        user.delete()
-        messages.success(request, "Пользователь успешно удален")
+        if request.user == self.get_object():
+            request.session['self_deleted'] = True
         
-        return redirect('users')
+        return super().delete(request, *args, **kwargs)
