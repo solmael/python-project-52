@@ -1,9 +1,10 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.views import View
+from django.views.generic import CreateView, ListView, UpdateView
 
 from task_manager.forms import CustomUserChangeForm, CustomUserCreationForm
 
@@ -63,52 +64,43 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return super().form_valid(form)
 
 
-class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    model = User
-    template_name = 'task_manager/users/delete.html'
-    success_url = reverse_lazy('users')
-    
+class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, View):
     def test_func(self):
-        return self.get_object() == self.request.user
+        user = self.get_object()
+        return user == self.request.user
     
     def handle_no_permission(self):
         if self.request.user.is_authenticated:
             messages.error(
                 self.request, 
                 "У вас нет прав для удаления другого пользователя."
-                )
+            )
             return redirect('users')
         else:
             messages.error(
                 self.request, 
                 "Вы не авторизованы! Пожалуйста, выполните вход."
-                )
-            return super().handle_no_permission()
+            )
+            return redirect('login')
     
-    def delete(self, request, *args, **kwargs):
-        username = self.get_object().username
-        request.session['deleted_username'] = username
-        
-        if request.user == self.get_object():
-            request.session['self_deleted'] = True
-        
-        return super().delete(request, *args, **kwargs)
+    def get_object(self):
+        return get_object_or_404(User, pk=self.kwargs['pk'])
     
-    def get_success_url(self):
-        messages.success(self.request, "Пользователь успешно удален")
-        
-        if self.request.user == self.get_object():
-            return reverse_lazy('users')
-        
-    def get_queryset(self):
-        return super().get_queryset().filter(id=self.request.user.id)
-    
-    def post(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         user = self.get_object()
+        
         if user.author_tasks.exists() or user.executor_tasks.exists():
             messages.error(
                 request, 
                 'Невозможно удалить пользователя, потому что он используется'
-                )
+            )
             return redirect('users')
-        return super().post(request, *args, **kwargs)
+        
+        username = user.username
+        request.session['deleted_username'] = username
+        request.session['self_deleted'] = True
+        
+        user.delete()
+        messages.success(request, "Пользователь успешно удален")
+        
+        return redirect('users')
