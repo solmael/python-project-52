@@ -38,35 +38,14 @@ jobs:
         with:
           python-version: "3.13"
 
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y make gettext \
-            libgtk-3-0t64 \
-            libx11-xcb1t64 \
-            libdbus-glib-1-2 \
-            libxt6 \
-            libxss1 \
-            libatspi2.0-0 \
-            libxcomposite1 \
-            libxdamage1 \
-            libxrandr2 \
-            libgbm1t64 \
-            libasound2t64 \
-            libu2f-udev
-
       - name: Install uv
-        uses: astral-sh/setup-uv@v2
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
 
       - name: Install dependencies
         run: |
-          uv venv
-          uv pip install -r requirements.txt
+          uv sync
 
-      - name: Install Playwright
-        run: |
-          uv run playwright install chromium
-          uv run playwright install-deps chromium
 
       - name: Apply database migrations
         run: |

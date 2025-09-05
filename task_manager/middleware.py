@@ -9,7 +9,7 @@ class SessionUpdateMiddleware:
         response = self.get_response(request)
         return response
 
-    def process_view(self, request, view_func, view_args, view_kwargs):
+    def process_view(self, request, _view_func, _view_args, _view_kwargs):
         if hasattr(request, 'session_update') and request.session_update:
             update_session_auth_hash(request, request.user)
             request.session_update = False
