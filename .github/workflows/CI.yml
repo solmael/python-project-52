@@ -68,5 +68,5 @@ jobs:
               -Dsonar.projectVersion=1.0
               -Dsonar.sources=task_manager
               -Dsonar.tests=task_manager/tests
-              -Dsonar.exclusions=**/migrations/**,**/__pycache__/**,/settings.py
+              -Dsonar.exclusions=**/migrations/**,**/__pycache__/**,/settings.py,task_manager/tests/**
               -Dsonar.sourceEncoding=UTF-8
