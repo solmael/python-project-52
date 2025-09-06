@@ -54,20 +54,19 @@ jobs:
 
       - name: Run tests with coverage
         run: make test-coverage
-
+        
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v5
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          with:
-          args: >
-            -Dsonar.projectKey=solmael_python-project-52
-            -Dsonar.organization=solmael
-            -Dsonar.projectName=python-project-52
-            -Dsonar.projectVersion=1.0
-            -Dsonar.sources=task_manager
-            -Dsonar.tests=tests
-            -Dsonar.exclusions=**/migrations/**,**/__pycache__/**,/settings.py
-            -Dsonar.sourceEncoding=UTF-8
-            -Dsonar.python.coverage.reportPaths=coverage.xml
-            -Dsonar.python.coverage.reportPathPrefix= 
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+            projectBaseDir: .
+            args: >
+              -Dsonar.projectKey=solmael_python-project-52
+              -Dsonar.organization=solmael
+              -Dsonar.projectName=python-project-52
+              -Dsonar.projectVersion=1.0
+              -Dsonar.sources=task_manager
+              -Dsonar.tests=task_manager/tests
+              -Dsonar.exclusions=**/migrations/**,**/__pycache__/**,/settings.py
+              -Dsonar.sourceEncoding=UTF-8
