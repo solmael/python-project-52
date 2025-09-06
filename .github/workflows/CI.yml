@@ -57,16 +57,7 @@ jobs:
 
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v5
+        with:
+          fetch-depth: 0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: >
-            -Dsonar.projectKey=VVP04_python-project-52
-            -Dsonar.organization=vvp04
-            -Dsonar.projectName=python-project-52
-            -Dsonar.projectVersion=1.0
-            -Dsonar.sources=task_manager
-            -Dsonar.tests=task_manager/labels/tests.py,task_manager/statuses/tests.py,task_manager/tasks/tests.py,task_manager/users/tests.py,task_manager/tests.py
-            -Dsonar.exclusions=**/migrations/**,**/__pycache__/**,**/tests.py,**/settings.py
-            -Dsonar.sourceEncoding=UTF-8
-            -Dsonar.python.coverage.reportPaths=coverage.xml
