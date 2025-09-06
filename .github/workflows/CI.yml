@@ -52,6 +52,9 @@ jobs:
         run: |
           make lint
 
+      - name: Run tests with coverage
+        run: make test-coverage
+
       - name: Check coverage.xml content
         run: |
           if [ -f coverage.xml ]; then
@@ -62,9 +65,6 @@ jobs:
             echo "ERROR: coverage.xml does not exist!"
             exit 1
             fi
-
-      - name: Run tests with coverage
-        run: make test-coverage
         
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v5
