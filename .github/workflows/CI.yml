@@ -52,6 +52,17 @@ jobs:
         run: |
           make lint
 
+      - name: Check coverage.xml content
+        run: |
+          if [ -f coverage.xml ]; then
+            echo "Coverage file exists"
+            echo "First few lines of coverage.xml:"
+            head -10 coverage.xml
+          else
+            echo "ERROR: coverage.xml does not exist!"
+            exit 1
+            fi
+
       - name: Run tests with coverage
         run: make test-coverage
         
@@ -70,3 +81,5 @@ jobs:
               -Dsonar.tests=task_manager/tests
               -Dsonar.exclusions=**/migrations/**,**/__pycache__/**,/settings.py,task_manager/tests/**
               -Dsonar.sourceEncoding=UTF-8
+              -Dsonar.python.coverage.reportPaths=coverage.xml
+              -Dsonar.python.coveragePlugin=coverage
