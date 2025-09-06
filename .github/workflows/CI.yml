@@ -68,7 +68,7 @@ jobs:
             -Dsonar.projectName=python-project-52
             -Dsonar.projectVersion=1.0
             -Dsonar.sources=task_manager
-            -Dsonar.tests=task_manager/tests
+            -Dsonar.tests=tests
             -Dsonar.exclusions=**/migrations/**,**/__pycache__/**,/settings.py
             -Dsonar.sourceEncoding=UTF-8
             -Dsonar.python.coverage.reportPaths=coverage.xml
