@@ -30,3 +30,6 @@ compilemessages:
 
 test:
 	python manage.py test task_manager --verbosity=2
+
+test-coverage:
+    uv run pytest -vv --cov=task_manager --cov-report=xml --cov-config=.coveragerc tests/
