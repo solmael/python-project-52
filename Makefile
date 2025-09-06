@@ -33,4 +33,4 @@ test:
 
 test-coverage:
 	coverage run --source=task_manager manage.py test task_manager
-	coverage xml --rcfile=.coveragerc
+	coverage xml --relative-files
