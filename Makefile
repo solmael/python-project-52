@@ -19,9 +19,6 @@ lint:
 fix:
 	uv run ruff check . --fix
 
-env:
-	source .venv/bin/activate
-
 dev:
 	uv run manage.py runserver
 
@@ -33,4 +30,5 @@ test:
 
 test-coverage:
 	coverage run --source=task_manager manage.py test task_manager
+	coverage report
 	coverage xml --rcfile=.coveragerc
