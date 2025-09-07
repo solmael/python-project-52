@@ -1,6 +1,7 @@
 ### Hexlet tests and linter status:
 [![Actions Status](https://github.com/solmael/python-project-52/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/solmael/python-project-52/actions)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=solmael_python-project-52&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=solmael_python-project-52)
+
 [![Django version](https://img.shields.io/badge/Django-5.2.4-blue )](https://www.djangoproject.com/ )
 [![Python version](https://img.shields.io/badge/Python-3.13.2-blue )](https://www.python.org/ )
 
