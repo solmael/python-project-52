@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import redirect
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from task_manager.forms import CustomUserChangeForm, CustomUserCreationForm
@@ -52,7 +52,10 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
                 self.request, 
                 "Вы не авторизованы! Пожалуйста, выполните вход."
             )
-            return redirect('login')
+            login_url = reverse('login')
+            next_path = self.request.get_full_path()
+            redirect_url = f"{login_url}?next={next_path}"
+            return redirect(redirect_url)
     
     def form_valid(self, form):
         self.request.session_update = bool(form.cleaned_data.get('password1'))
