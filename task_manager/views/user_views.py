@@ -6,6 +6,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from task_manager.forms import CustomUserChangeForm, CustomUserCreationForm
+from task_manager.models import Task
 
 User = get_user_model()
 
@@ -85,27 +86,17 @@ class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             )
             return redirect('login')
     
-    def get(self, request, *args, **kwargs):
+    def form_valid(self, form):
         user = self.get_object()
-        
-        if user.author_tasks.exists() or user.executor_tasks.exists():
+        if Task.objects.filter(author=user).exists():
             messages.error(
-                request, 
-                'Невозможно удалить пользователя, потому что он используется'
+                self.request,
+                "Невозможно удалить пользователя, потому что он используется"
             )
             return redirect('users')
         
-        return super().get(request, *args, **kwargs)
-    
-    def get_success_url(self):
-        messages.success(self.request, "Пользователь успешно удален")
-        return reverse_lazy('users')
-    
-    def delete(self, request, *args, **kwargs):
-        username = self.get_object().username
-        request.session['deleted_username'] = username
-        
-        if request.user == self.get_object():
-            request.session['self_deleted'] = True
-        
-        return super().delete(request, *args, **kwargs)
+        messages.success(
+            self.request,
+            "Пользователь успешно удален"
+        )
+        return super().form_valid(form)
